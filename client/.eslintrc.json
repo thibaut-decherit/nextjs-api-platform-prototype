@@ -6,6 +6,7 @@
   "extends": [
     "eslint:recommended",
     "next/core-web-vitals",
+    "plugin:jest-dom/recommended",
     "plugin:react/recommended",
     "plugin:react-hooks/recommended",
     "plugin:@typescript-eslint/recommended"
@@ -20,6 +21,7 @@
     "sourceType": "module"
   },
   "plugins": [
+    "jest-dom",
     "react",
     "react-hooks",
     "@typescript-eslint"
