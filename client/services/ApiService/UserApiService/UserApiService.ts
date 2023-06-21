@@ -1,5 +1,5 @@
 import axios from "axios";
-import {UserFormUser} from "../../../components/pages/users/types";
+import {UserFormUser, UserListUser} from "../../../components/pages/users/types";
 import {AxiosResponseWithUserFormUser} from "./UserApiService.interfaces";
 
 const rootUrl = process.env.NEXT_PUBLIC_API_BASE_URL + process.env.NEXT_PUBLIC_API_PATH + '/users';
@@ -28,6 +28,20 @@ function add(user: UserFormUser) {
   });
 }
 
+function findAll() {
+  return new Promise<UserListUser[]>((resolve, reject) => {
+    axios
+      .get(rootUrl)
+      .then(response => {
+        resolve(response.data['hydra:member']);
+      })
+      .catch(error => {
+        reject(error);
+      });
+  });
+}
+
 export {
-  add
+  add,
+  findAll
 };

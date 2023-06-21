@@ -1,6 +1,9 @@
 import PropTypes from "prop-types";
 import {ReactNode} from "react";
+import {QueryClient, QueryClientProvider,} from "react-query";
 import "../src/app/globals.css";
+
+const queryClient = new QueryClient()
 
 const Layout = (
   {
@@ -11,9 +14,9 @@ const Layout = (
 ) => {
 
   return (
-    <>
+    <QueryClientProvider client={queryClient}>
       {children}
-    </>
+    </QueryClientProvider>
   );
 };
 
