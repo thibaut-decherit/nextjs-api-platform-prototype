@@ -13,7 +13,12 @@ import {findAll} from "../../services/ApiService/UserApiService/UserApiService";
 
 export const getStaticProps: GetStaticProps = async () => {
   const queryClient = new QueryClient();
-  await queryClient.prefetchQuery('users', findAll);
+
+  /*
+  staleTime is specified to prevent react-query from re fetching the data way too much: e.g. every single time the
+  window loses then regains focus (sometimes even two times in a row during that event).
+   */
+  await queryClient.prefetchQuery({queryKey: 'users', queryFn: findAll, staleTime: 60000});
 
   return {
     props: {
@@ -23,7 +28,7 @@ export const getStaticProps: GetStaticProps = async () => {
 };
 
 const Page = () => {
-  const query = useQuery('users', findAll);
+  const query = useQuery({queryKey: 'users', queryFn: findAll, staleTime: 60000});
 
   if (query.isLoading) {
     return <span>Loading...</span>;
