@@ -5,10 +5,22 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
+import {GetStaticProps} from "next";
 import React from "react";
-import {useQuery} from "react-query";
+import {dehydrate, QueryClient, useQuery} from "react-query";
 import {UserListUser} from "../../components/pages/users/types";
 import {findAll} from "../../services/ApiService/UserApiService/UserApiService";
+
+export const getStaticProps: GetStaticProps = async () => {
+  const queryClient = new QueryClient();
+  await queryClient.prefetchQuery('users', findAll);
+
+  return {
+    props: {
+      dehydratedState: dehydrate(queryClient)
+    }
+  };
+};
 
 const Page = () => {
   const query = useQuery('users', findAll);

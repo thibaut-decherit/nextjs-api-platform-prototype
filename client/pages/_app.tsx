@@ -1,13 +1,14 @@
 import type {AppProps} from "next/app";
+import {DehydratedState} from "react-query";
 import Layout from "../components/Layout";
 
 const App = (
   {
     Component,
     pageProps,
-  }: AppProps
+  }: AppProps<{ dehydratedState: DehydratedState }>
 ) => (
-  <Layout>
+  <Layout dehydratedState={pageProps.dehydratedState}>
     <Component {...pageProps}/>
   </Layout>
 );
