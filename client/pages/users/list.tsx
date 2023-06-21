@@ -6,6 +6,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import {GetStaticProps} from "next";
+import Link from "next/link";
 import React from "react";
 import {dehydrate, QueryClient, useQuery} from "react-query";
 import {UserListUser} from "../../components/pages/users/types";
@@ -35,32 +36,35 @@ const Page = () => {
   }
 
   return (
-    <TableContainer component={Paper}>
-      <Table aria-label="Users list">
-        <TableHead>
-          <TableRow>
-            <TableCell>First name</TableCell>
-            <TableCell>Last name</TableCell>
-            <TableCell>Email address</TableCell>
-            <TableCell>Created at</TableCell>
-            <TableCell>Last modified at</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {query.data.map((user: UserListUser) => (
-            <TableRow key={user.id}>
-              <TableCell component="th" scope="row">
-                {user.firstName}
-              </TableCell>
-              <TableCell>{user.lastName}</TableCell>
-              <TableCell>{user.email}</TableCell>
-              <TableCell>{user.createdAt}</TableCell>
-              <TableCell>{user.lastModifiedAt}</TableCell>
+    <>
+      <Link href="/users/new">New</Link>
+      <TableContainer component={Paper}>
+        <Table aria-label="Users list">
+          <TableHead>
+            <TableRow>
+              <TableCell>First name</TableCell>
+              <TableCell>Last name</TableCell>
+              <TableCell>Email address</TableCell>
+              <TableCell>Created at</TableCell>
+              <TableCell>Last modified at</TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+          </TableHead>
+          <TableBody>
+            {query.data.map((user: UserListUser) => (
+              <TableRow key={user.id}>
+                <TableCell component="th" scope="row">
+                  {user.firstName}
+                </TableCell>
+                <TableCell>{user.lastName}</TableCell>
+                <TableCell>{user.email}</TableCell>
+                <TableCell>{user.createdAt}</TableCell>
+                <TableCell>{user.lastModifiedAt}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </>
   );
 };
 
