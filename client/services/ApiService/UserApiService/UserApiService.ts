@@ -28,12 +28,26 @@ function add(user: UserFormUser) {
   });
 }
 
-function findAll() {
-  return new Promise<UserListUser[]>((resolve, reject) => {
+function paginatedFindAll(
+  itemsPerPage = 5,
+  pageNumber = 1
+) {
+  const url =
+    rootUrl +
+    `?itemsPerPage=${itemsPerPage}` +
+    `&page=${pageNumber}`;
+
+  return new Promise<{
+    results: UserListUser[];
+    totalItemsCount: number
+  }>((resolve, reject) => {
     axios
-      .get(rootUrl)
+      .get(url)
       .then(response => {
-        resolve(response.data['hydra:member']);
+        resolve({
+          results: response.data['hydra:member'],
+          totalItemsCount: response.data['hydra:totalItems']
+        });
       })
       .catch(error => {
         reject(error);
@@ -43,5 +57,5 @@ function findAll() {
 
 export {
   add,
-  findAll
+  paginatedFindAll
 };

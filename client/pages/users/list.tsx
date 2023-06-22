@@ -4,32 +4,74 @@ import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
+import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import {GetStaticProps} from "next";
+import _ from "lodash";
+import {GetServerSideProps} from "next";
 import Link from "next/link";
-import React from "react";
+import PropTypes from "prop-types";
+import React, {useState} from "react";
 import {dehydrate, QueryClient, useQuery} from "react-query";
+import useSetQueryStringParam from "../../components/hooks/useSetQueryStringParam";
 import {UserListUser} from "../../components/pages/users/types";
-import {findAll} from "../../services/ApiService/UserApiService/UserApiService";
+import {paginatedFindAll} from "../../services/ApiService/UserApiService/UserApiService";
 
-export const getStaticProps: GetStaticProps = async () => {
+const buildQuery = (itemsPerPage: number, pageNumber: number) => {
+  return {
+    queryKey: ['users', itemsPerPage, pageNumber],
+    queryFn: () => paginatedFindAll(itemsPerPage, pageNumber),
+    staleTime: 60000
+  };
+}
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const itemsPerPage = Number(_.get(context, 'query.itemsPerPage', 25)) || 25;
+  const pageNumber = Number(_.get(context, 'query.page', 1)) || 1;
+
   const queryClient = new QueryClient();
 
   /*
   staleTime is specified to prevent react-query from re fetching the data way too much: e.g. every single time the
   window loses then regains focus (sometimes even two times in a row during that event).
    */
-  await queryClient.prefetchQuery({queryKey: 'users', queryFn: findAll, staleTime: 60000});
+  await queryClient.prefetchQuery(buildQuery(itemsPerPage, pageNumber));
 
   return {
     props: {
-      dehydratedState: dehydrate(queryClient)
+      dehydratedState: dehydrate(queryClient),
+      ssrItemsPerPage: itemsPerPage,
+      ssrPageNumber: pageNumber
     }
   };
 };
 
-const Page = () => {
-  const query = useQuery({queryKey: 'users', queryFn: findAll, staleTime: 60000});
+const Page = (
+  {
+    ssrItemsPerPage,
+    ssrPageNumber
+  }: {
+    ssrItemsPerPage: number;
+    ssrPageNumber: number;
+  }
+) => {
+  const setQueryStringParam = useSetQueryStringParam();
+
+  const [pageNumber, setPageNumber] = useState(ssrPageNumber);
+  const handleChangePage = (event: React.MouseEvent<HTMLButtonElement>, newPageNumber: number) => {
+    // TablePagination starts at 0, not at 1.
+    newPageNumber = newPageNumber + 1;
+
+    setPageNumber(newPageNumber);
+    setQueryStringParam('page', String(newPageNumber), 'push');
+  }
+
+  const [itemsPerPage, setItemsPerPage] = useState(ssrItemsPerPage);
+  const handleChangeItemsPerPage = (event: React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement>) => {
+    setItemsPerPage(event.target.value);
+    setQueryStringParam('itemsPerPage', event.target.value, 'push');
+  }
+
+  const query = useQuery(buildQuery(itemsPerPage, pageNumber));
 
   if (query.isLoading) {
     return <span>Loading...</span>;
@@ -50,7 +92,7 @@ const Page = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {query.data.map((user: UserListUser) => (
+            {query.data.results.map((user: UserListUser) => (
               <TableRow key={user.id}>
                 <TableCell component="th" scope="row">
                   {user.firstName}
@@ -64,10 +106,22 @@ const Page = () => {
           </TableBody>
         </Table>
       </TableContainer>
+      <TablePagination
+        component="div"
+        count={query.data.totalItemsCount}
+        page={pageNumber - 1}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeItemsPerPage}
+        rowsPerPage={itemsPerPage}
+        rowsPerPageOptions={[25, 50, 100]}
+      />
     </>
   );
 };
 
-Page.propTypes = {};
+Page.propTypes = {
+  ssrItemsPerPage: PropTypes.number.isRequired,
+  ssrPageNumber: PropTypes.number.isRequired
+};
 
 export default Page;
