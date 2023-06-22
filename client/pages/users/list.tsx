@@ -14,6 +14,7 @@ import React, {useState} from "react";
 import {dehydrate, QueryClient, useQuery} from "react-query";
 import useSetQueryStringParam from "../../components/hooks/useSetQueryStringParam";
 import {UserListUser} from "../../components/pages/users/types";
+import Placeholder from "../../components/Placeholder";
 import {paginatedFindAll} from "../../services/ApiService/UserApiService/UserApiService";
 
 const buildQuery = (itemsPerPage: number, pageNumber: number) => {
@@ -73,8 +74,21 @@ const Page = (
 
   const query = useQuery(buildQuery(itemsPerPage, pageNumber));
 
-  if (query.isLoading) {
-    return <span>Loading...</span>;
+  const renderPlaceholders = () => {
+    const placeholders = [];
+    for (let i = 0; i < itemsPerPage; i++) {
+      placeholders.push(
+        <TableRow key={i}>
+          <TableCell component="th" scope="row"><Placeholder/></TableCell>
+          <TableCell><Placeholder/></TableCell>
+          <TableCell><Placeholder/></TableCell>
+          <TableCell><Placeholder/></TableCell>
+          <TableCell><Placeholder/></TableCell>
+        </TableRow>
+      );
+    }
+
+    return placeholders;
   }
 
   return (
@@ -92,29 +106,41 @@ const Page = (
             </TableRow>
           </TableHead>
           <TableBody>
-            {query.data.results.map((user: UserListUser) => (
-              <TableRow key={user.id}>
-                <TableCell component="th" scope="row">
-                  {user.firstName}
-                </TableCell>
-                <TableCell>{user.lastName}</TableCell>
-                <TableCell>{user.email}</TableCell>
-                <TableCell>{user.createdAt}</TableCell>
-                <TableCell>{user.lastModifiedAt}</TableCell>
-              </TableRow>
-            ))}
+            {query.isLoading
+              ? (
+                renderPlaceholders()
+              )
+              : (
+                query.data.results.map((user: UserListUser) => (
+                  <TableRow key={user.id}>
+                    <TableCell component="th" scope="row">{user.firstName}</TableCell>
+                    <TableCell>{user.lastName}</TableCell>
+                    <TableCell>{user.email}</TableCell>
+                    <TableCell>{user.createdAt}</TableCell>
+                    <TableCell>{user.lastModifiedAt}</TableCell>
+                  </TableRow>
+                ))
+              )
+            }
           </TableBody>
         </Table>
       </TableContainer>
-      <TablePagination
-        component="div"
-        count={query.data.totalItemsCount}
-        page={pageNumber - 1}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeItemsPerPage}
-        rowsPerPage={itemsPerPage}
-        rowsPerPageOptions={[25, 50, 100]}
-      />
+      {query.isLoading
+        ? (
+          <Placeholder/>
+        )
+        : (
+          <TablePagination
+            component="div"
+            count={query.data.totalItemsCount}
+            page={pageNumber - 1}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeItemsPerPage}
+            rowsPerPage={itemsPerPage}
+            rowsPerPageOptions={[25, 50, 100]}
+          />
+        )
+      }
     </>
   );
 };
