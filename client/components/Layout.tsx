@@ -13,7 +13,7 @@ const Layout = (
   }
 ) => {
   const [queryClient] = useState(() => new QueryClient());
-console.log(dehydratedState)
+
   return (
     <QueryClientProvider client={queryClient}>
       <Hydrate state={dehydratedState}>
