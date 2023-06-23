@@ -9,12 +9,14 @@ import TableRow from "@mui/material/TableRow";
 import _ from "lodash";
 import {GetServerSideProps} from "next";
 import Link from "next/link";
+import {useRouter} from "next/router";
 import PropTypes from "prop-types";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {dehydrate, QueryClient, useQuery} from "react-query";
 import useSetQueryStringParam from "../../components/hooks/useSetQueryStringParam";
 import {UserListUser} from "../../components/pages/users/types";
 import Placeholder from "../../components/Placeholder";
+import NextRouterHelper from "../../helpers/NextRouterHelper";
 import {paginatedFindAll} from "../../services/ApiService/UserApiService/UserApiService";
 
 const buildQuery = (itemsPerPage: number, pageNumber: number) => {
@@ -24,10 +26,18 @@ const buildQuery = (itemsPerPage: number, pageNumber: number) => {
     staleTime: 60000
   };
 }
+const defaultStatesValues = {
+  pageNumber: 1,
+  itemsPerPage: 25
+};
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const itemsPerPage = Number(_.get(context, 'query.itemsPerPage', 25)) || 25;
-  const pageNumber = Number(_.get(context, 'query.page', 1)) || 1;
+  const itemsPerPage =
+    Number(_.get(context, 'query.itemsPerPage', defaultStatesValues.itemsPerPage))
+    || defaultStatesValues.itemsPerPage;
+  const pageNumber =
+    Number(_.get(context, 'query.page', defaultStatesValues.pageNumber))
+    || defaultStatesValues.pageNumber;
 
   const queryClient = new QueryClient();
 
@@ -90,6 +100,27 @@ const Page = (
 
     return placeholders;
   }
+
+  const router = useRouter();
+  useEffect(() => {
+    /*
+    Ensures search related states remain synced with URL search params in case the latter change because of
+    navigation (e.g. back/forward or click on the current page's link in the navbar).
+     */
+    NextRouterHelper.syncStatesWithQueryParams(
+      {
+        itemsPerPage: {
+          defaultValue: defaultStatesValues.itemsPerPage,
+          setStateFunction: itemsPerPage => setItemsPerPage(Number(itemsPerPage))
+        },
+        page: {
+          defaultValue: defaultStatesValues.pageNumber,
+          setStateFunction: pageNumber => setPageNumber(Number(pageNumber))
+        }
+      },
+      router.query
+    );
+  }, [router.query]);
 
   return (
     <>
