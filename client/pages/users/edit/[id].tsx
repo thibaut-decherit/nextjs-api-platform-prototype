@@ -3,7 +3,7 @@ import TextField from "@mui/material/TextField";
 import Link from "next/link";
 import {useRouter} from "next/router";
 import React, {useMemo, useState} from "react";
-import {SubmitHandler, useForm} from "react-hook-form";
+import {Controller, SubmitHandler, useForm} from "react-hook-form";
 import {useQuery} from "react-query";
 import {UserFormUser} from "../../../components/pages/users/types";
 import {editOneById, findOneById} from "../../../services/ApiService/UserApiService/UserApiService";
@@ -30,7 +30,7 @@ const Page = () => {
     enabled: !!userId
   });
 
-  const {formState: {errors}, handleSubmit, register} = useForm<FormInput>({values: query?.data});
+  const {control, formState: {errors}, handleSubmit} = useForm<FormInput>({values: query?.data});
 
   const defaultApiErrors = useMemo(() => {
     return {
@@ -63,36 +63,92 @@ const Page = () => {
     <>
       <Link href="/users/list">List</Link>
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
-        <TextField
-          {...register('firstName', {
+        <Controller
+          name="firstName"
+          control={control}
+          render={({field}) => {
+            /*
+            Required because field.value is initially undefined and TextField does not update label shrink state until
+            the form has been interacted with, even if field.value contains data on subsequent renders.
+             */
+            if (field.value === undefined) {
+              return;
+            }
+
+            return (
+              <TextField
+                {...field}
+                error={apiErrors.firstName.length > 0 || !!errors.firstName}
+                helperText={apiErrors.firstName[0] || errors?.firstName?.message}
+                label="First name"
+                required
+                variant="outlined"
+              />
+            );
+          }}
+          rules={{
             maxLength: {
               message: 'Input cannot be longer than 255 characters.',
               value: 255
             },
             required: 'Input is required.'
-          })}
-          error={apiErrors.firstName.length > 0 || !!errors.firstName}
-          helperText={apiErrors.firstName[0] || errors?.firstName?.message}
-          label="First name"
-          required
-          variant="outlined"
+          }}
         />
-        <TextField
-          {...register('lastName', {
+        <Controller
+          name="lastName"
+          control={control}
+          render={({field}) => {
+            /*
+            Required because field.value is initially undefined and TextField does not update label shrink state until
+            the form has been interacted with, even if field.value contains data on subsequent renders.
+             */
+            if (field.value === undefined) {
+              return;
+            }
+
+            return (
+              <TextField
+                {...field}
+                error={apiErrors.lastName.length > 0 || !!errors.lastName}
+                helperText={apiErrors.lastName[0] || errors?.lastName?.message}
+                label="Last name"
+                required
+                variant="outlined"
+              />
+            );
+          }}
+          rules={{
             maxLength: {
               message: 'Input cannot be longer than 255 characters.',
               value: 255
             },
             required: 'Input is required.'
-          })}
-          error={apiErrors.lastName.length > 0 || !!errors.lastName}
-          helperText={apiErrors.lastName[0] || errors?.lastName?.message}
-          label="Last name"
-          required
-          variant="outlined"
+          }}
         />
-        <TextField
-          {...register('email', {
+        <Controller
+          name="email"
+          control={control}
+          render={({field}) => {
+            /*
+            Required because field.value is initially undefined and TextField does not update label shrink state until
+            the form has been interacted with, even if field.value contains data on subsequent renders.
+             */
+            if (field.value === undefined) {
+              return;
+            }
+
+            return (
+              <TextField
+                {...field}
+                error={apiErrors.email.length > 0 || !!errors.email}
+                helperText={apiErrors.email[0] || errors?.email?.message}
+                label="Email address"
+                required
+                variant="outlined"
+              />
+            );
+          }}
+          rules={{
             maxLength: {
               message: 'Input cannot be longer than 255 characters.',
               value: 255
@@ -102,13 +158,7 @@ const Page = () => {
               value: /^.+@\S+\.\S+$/
             },
             required: 'Input is required.'
-          })}
-          error={apiErrors.email.length > 0 || !!errors.email}
-          helperText={apiErrors.email[0] || errors?.email?.message}
-          label="Email address"
-          required
-          type="email"
-          variant="outlined"
+          }}
         />
         <Button className="bg-blue" type="submit" variant="contained">Save</Button>
       </form>

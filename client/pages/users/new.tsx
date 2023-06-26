@@ -2,7 +2,7 @@ import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Link from "next/link";
 import React, {useMemo, useState} from "react";
-import {SubmitHandler, useForm} from "react-hook-form";
+import {Controller, SubmitHandler, useForm} from "react-hook-form";
 import {UserFormUser} from "../../components/pages/users/types";
 import {add} from "../../services/ApiService/UserApiService/UserApiService";
 import {submit} from "../../services/FormSubmissionService";
@@ -15,7 +15,7 @@ type FormInput = {
 };
 
 const Page = () => {
-  const {formState: {errors}, handleSubmit, register, reset} = useForm<FormInput>({
+  const {control, formState: {errors}, handleSubmit, reset} = useForm<FormInput>({
     defaultValues: {
       firstName: '',
       lastName: '',
@@ -53,36 +53,68 @@ const Page = () => {
     <>
       <Link href="/users/list">List</Link>
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
-        <TextField
-          {...register('firstName', {
+        <Controller
+          name="firstName"
+          control={control}
+          render={({field}) => {
+            return (
+              <TextField
+                {...field}
+                error={apiErrors.firstName.length > 0 || !!errors.firstName}
+                helperText={apiErrors.firstName[0] || errors?.firstName?.message}
+                label="First name"
+                required
+                variant="outlined"
+              />
+            );
+          }}
+          rules={{
             maxLength: {
               message: 'Input cannot be longer than 255 characters.',
               value: 255
             },
             required: 'Input is required.'
-          })}
-          error={apiErrors.firstName.length > 0 || !!errors.firstName}
-          helperText={apiErrors.firstName[0] || errors?.firstName?.message}
-          label="First name"
-          required
-          variant="outlined"
+          }}
         />
-        <TextField
-          {...register('lastName', {
+        <Controller
+          name="lastName"
+          control={control}
+          render={({field}) => {
+            return (
+              <TextField
+                {...field}
+                error={apiErrors.lastName.length > 0 || !!errors.lastName}
+                helperText={apiErrors.lastName[0] || errors?.lastName?.message}
+                label="Last name"
+                required
+                variant="outlined"
+              />
+            );
+          }}
+          rules={{
             maxLength: {
               message: 'Input cannot be longer than 255 characters.',
               value: 255
             },
             required: 'Input is required.'
-          })}
-          error={apiErrors.lastName.length > 0 || !!errors.lastName}
-          helperText={apiErrors.lastName[0] || errors?.lastName?.message}
-          label="Last name"
-          required
-          variant="outlined"
+          }}
         />
-        <TextField
-          {...register('email', {
+        <Controller
+          name="email"
+          control={control}
+          render={({field}) => {
+            return (
+              <TextField
+                {...field}
+                error={apiErrors.email.length > 0 || !!errors.email}
+                helperText={apiErrors.email[0] || errors?.email?.message}
+                label="Email address"
+                required
+                variant="outlined"
+              />
+            );
+          }}
+          rules={{
             maxLength: {
               message: 'Input cannot be longer than 255 characters.',
               value: 255
@@ -92,13 +124,7 @@ const Page = () => {
               value: /^.+@\S+\.\S+$/
             },
             required: 'Input is required.'
-          })}
-          error={apiErrors.email.length > 0 || !!errors.email}
-          helperText={apiErrors.email[0] || errors?.email?.message}
-          label="Email address"
-          required
-          type="email"
-          variant="outlined"
+          }}
         />
         <Button className="bg-blue" type="submit" variant="contained">Create</Button>
       </form>
