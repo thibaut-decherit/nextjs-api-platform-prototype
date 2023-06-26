@@ -130,6 +130,7 @@ const Page = (
         <Table aria-label="Users list">
           <TableHead>
             <TableRow>
+              <TableCell>ID</TableCell>
               <TableCell>First name</TableCell>
               <TableCell>Last name</TableCell>
               <TableCell>Email address</TableCell>
@@ -145,7 +146,10 @@ const Page = (
               : (
                 query?.data?.results?.map((user: UserListUser) => (
                   <TableRow key={user.id}>
-                    <TableCell component="th" scope="row">{user.firstName}</TableCell>
+                    <TableCell component="th" scope="row">
+                      <Link href={`/users/edit/${user.id}`}>{user.id}</Link>
+                    </TableCell>
+                    <TableCell>{user.firstName}</TableCell>
                     <TableCell>{user.lastName}</TableCell>
                     <TableCell>{user.email}</TableCell>
                     <TableCell>{user.createdAt}</TableCell>

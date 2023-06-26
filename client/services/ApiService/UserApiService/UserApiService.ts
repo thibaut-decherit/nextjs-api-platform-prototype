@@ -28,6 +28,39 @@ function add(user: UserFormUser) {
   });
 }
 
+function editOneById(id: string, user: UserListUser) {
+  return new Promise<AxiosResponseWithUserFormUser>((resolve, reject) => {
+    axios
+      .patch(
+        rootUrl + '/' + id,
+        user,
+        {
+          headers: {
+            'Content-Type': 'application/merge-patch+json'
+          }
+        })
+      .then(response => {
+        resolve(response);
+      })
+      .catch(error => {
+        reject(error);
+      });
+  });
+}
+
+function findOneById(id: string) {
+  return new Promise<UserListUser>((resolve, reject) => {
+    axios
+      .get(rootUrl + '/' + id)
+      .then(response => {
+        resolve(response.data);
+      })
+      .catch(error => {
+        reject(error);
+      });
+  });
+}
+
 function paginatedFindAll(
   itemsPerPage = 5,
   pageNumber = 1
@@ -57,5 +90,7 @@ function paginatedFindAll(
 
 export {
   add,
+  editOneById,
+  findOneById,
   paginatedFindAll
 };
