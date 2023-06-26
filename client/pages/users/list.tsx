@@ -9,6 +9,7 @@ import TableRow from "@mui/material/TableRow";
 import _ from "lodash";
 import {GetServerSideProps} from "next";
 import Link from "next/link";
+import type {NextRouter} from "next/router";
 import {useRouter} from "next/router";
 import PropTypes from "prop-types";
 import React, {useEffect, useState} from "react";
@@ -68,7 +69,7 @@ const Page = (
   const setQueryStringParam = useSetQueryStringParam();
 
   const [pageNumber, setPageNumber] = useState(ssrPageNumber);
-  const handleChangePage = (event: React.MouseEvent<HTMLButtonElement>, newPageNumber: number) => {
+  const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPageNumber: number) => {
     // TablePagination starts at 0, not at 1.
     newPageNumber = newPageNumber + 1;
 
@@ -77,8 +78,8 @@ const Page = (
   }
 
   const [itemsPerPage, setItemsPerPage] = useState(ssrItemsPerPage);
-  const handleChangeItemsPerPage = (event: React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement>) => {
-    setItemsPerPage(event.target.value);
+  const handleChangeItemsPerPage = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+    setItemsPerPage(Number(event.target.value));
     setQueryStringParam('itemsPerPage', event.target.value, 'push');
   }
 
@@ -101,7 +102,7 @@ const Page = (
     return placeholders;
   }
 
-  const router = useRouter();
+  const router: NextRouter = useRouter();
   useEffect(() => {
     /*
     Ensures search related states remain synced with URL search params in case the latter change because of
@@ -142,7 +143,7 @@ const Page = (
                 renderPlaceholders()
               )
               : (
-                query.data.results.map((user: UserListUser) => (
+                query?.data?.results?.map((user: UserListUser) => (
                   <TableRow key={user.id}>
                     <TableCell component="th" scope="row">{user.firstName}</TableCell>
                     <TableCell>{user.lastName}</TableCell>
@@ -163,7 +164,7 @@ const Page = (
         : (
           <TablePagination
             component="div"
-            count={query.data.totalItemsCount}
+            count={query?.data?.totalItemsCount || 0}
             page={pageNumber - 1}
             onPageChange={handleChangePage}
             onRowsPerPageChange={handleChangeItemsPerPage}

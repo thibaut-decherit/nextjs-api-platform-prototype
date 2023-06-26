@@ -2,7 +2,7 @@ import axios from "axios";
 import {UserFormUser, UserListUser} from "../../../components/pages/users/types";
 import {AxiosResponseWithUserFormUser} from "./UserApiService.interfaces";
 
-const rootUrl = process.env.NEXT_PUBLIC_API_BASE_URL + process.env.NEXT_PUBLIC_API_PATH + '/users';
+const rootUrl = (process.env.NEXT_PUBLIC_API_BASE_URL as string) + (process.env.NEXT_PUBLIC_API_PATH as string) + '/users';
 
 function add(user: UserFormUser) {
   return new Promise<AxiosResponseWithUserFormUser>((resolve, reject) => {

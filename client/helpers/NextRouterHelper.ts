@@ -1,4 +1,5 @@
 import _ from "lodash";
+import type {ParsedUrlQuery} from "querystring";
 
 export default class NextRouterHelper {
   /**
@@ -8,23 +9,14 @@ export default class NextRouterHelper {
   static syncStatesWithQueryParams(
     config: {
       [key: string]: {
-        defaultValue: number | string | null;
-        /*
-        The first supported type is for proper setState() functions from useState(), the second one is for 'fake'
-        setState() functions wrapping useReducer() dispatch().
-        Use the first one if your state supports number | string | null types.
-        If your state only supports string or number, use the second one with a reducer supporting
-        number | string | null but enforcing your state type by casting the 'fake' setState() parameter to the expected
-        type (number or string), or by assigning a default value of the expected type if the parameter of the 'fake'
-        setState() is null.
-         */
-        setStateFunction: (newState: number | string | null) => void;
+        defaultValue: number | string | string[] | null;
+        setStateFunction: (newState: number | string | string[] | null) => void;
       }
     },
-    queryParams: URLSearchParams
+    queryParams: ParsedUrlQuery
   ) {
     Object.keys(config).forEach(queryParamName => {
-      const queryParam: number | string | null = _.get(queryParams, queryParamName, null);
+      const queryParam: string | string[] | null = _.get(queryParams, queryParamName, null);
       if (queryParam !== null) {
         // query param is still in the URL, so we ensure the related state has the same value.
         config[queryParamName].setStateFunction(queryParam);
