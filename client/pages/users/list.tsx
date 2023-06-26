@@ -105,7 +105,7 @@ const Page = (
   const router: NextRouter = useRouter();
   useEffect(() => {
     /*
-    Ensures search related states remain synced with URL search params in case the latter change because of
+    Ensures search related states remain synced with URL query params in case the latter change because of
     navigation (e.g. back/forward or click on the current page's link in the navbar).
      */
     NextRouterHelper.syncStatesWithQueryParams(
