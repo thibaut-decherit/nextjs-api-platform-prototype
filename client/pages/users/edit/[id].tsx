@@ -26,6 +26,8 @@ const Page = () => {
     queryFn: () => findOneById(userId),
     staleTime: 60000,
     refetchOnMount: 'always',
+    refetchOnWindowFocus: false,
+    retry: false,
 
     // The query will not execute until userId exists. Until then, query.isIdle will be true.
     enabled: userId !== 'undefined'
