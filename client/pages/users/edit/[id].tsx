@@ -56,13 +56,20 @@ const Page = () => {
     );
   };
 
-  if (query.isIdle || query.isLoading) {
-    return <p>Loading...</p>
-  }
+  const renderLoading = () => {
+    return <p>Loading...</p>;
+  };
 
-  return (
-    <>
-      <Link href="/users/list">List</Link>
+  const renderError = () => {
+    if (query.error?.response?.status === 404) {
+      return <p>User not found.</p>;
+    } else {
+      return <p>Unknown error.</p>;
+    }
+  };
+
+  const renderForm = () => {
+    return (
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <Controller
           name="firstName"
@@ -163,6 +170,25 @@ const Page = () => {
         />
         <Button className="bg-blue" type="submit" variant="contained">Save</Button>
       </form>
+    );
+  };
+
+  const renderConditional = () => {
+    if (query.isIdle || query.isLoading) {
+      return renderLoading();
+    }
+
+    if (query.isError) {
+      return renderError();
+    }
+
+    return renderForm();
+  };
+
+  return (
+    <>
+      <Link href="/users/list">List</Link>
+      {renderConditional()}
     </>
   );
 };
