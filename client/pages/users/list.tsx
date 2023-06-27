@@ -6,6 +6,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
+import {AxiosError} from "axios";
 import _ from "lodash";
 import {GetServerSideProps} from "next";
 import Link from "next/link";
@@ -83,7 +84,9 @@ const Page = (
     setQueryStringParam('itemsPerPage', event.target.value, 'push');
   }
 
-  const query = useQuery(buildQuery(itemsPerPage, pageNumber));
+  const query = useQuery<{ results: UserListUser[], totalItemsCount: number }, AxiosError>(
+    buildQuery(itemsPerPage, pageNumber)
+  );
 
   const renderPlaceholders = () => {
     const placeholders = [];

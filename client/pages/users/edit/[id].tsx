@@ -1,5 +1,6 @@
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
+import {AxiosError} from "axios";
 import Link from "next/link";
 import {useRouter} from "next/router";
 import React, {useMemo, useState} from "react";
@@ -18,19 +19,19 @@ type FormInput = {
 
 const Page = () => {
   const router = useRouter();
-  const userId = router.query.id;
+  const userId = String(router.query.id);
 
-  const query = useQuery({
+  const query = useQuery<UserFormUser, AxiosError>({
     queryKey: ['user', userId],
     queryFn: () => findOneById(userId),
     staleTime: 60000,
     refetchOnMount: 'always',
 
     // The query will not execute until userId exists. Until then, query.isIdle will be true.
-    enabled: !!userId
+    enabled: userId !== 'undefined'
   });
 
-  const {control, formState: {errors}, handleSubmit} = useForm<FormInput>({values: query?.data});
+  const {control, formState: {errors}, handleSubmit} = useForm<UserFormUser>({values: query?.data});
 
   const defaultApiErrors = useMemo(() => {
     return {
@@ -72,7 +73,7 @@ const Page = () => {
             the form has been interacted with, even if field.value contains data on subsequent renders.
              */
             if (field.value === undefined) {
-              return;
+              return <></>;
             }
 
             return (
@@ -103,7 +104,7 @@ const Page = () => {
             the form has been interacted with, even if field.value contains data on subsequent renders.
              */
             if (field.value === undefined) {
-              return;
+              return <></>;
             }
 
             return (
@@ -134,7 +135,7 @@ const Page = () => {
             the form has been interacted with, even if field.value contains data on subsequent renders.
              */
             if (field.value === undefined) {
-              return;
+              return <></>;
             }
 
             return (
