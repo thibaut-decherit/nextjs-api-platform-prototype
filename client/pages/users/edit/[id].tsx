@@ -7,7 +7,7 @@ import React, {useMemo, useState} from "react";
 import {Controller, SubmitHandler, useForm} from "react-hook-form";
 import {useQuery} from "react-query";
 import {UserFormUser} from "../../../components/pages/users/types";
-import {editOneById, findOneById} from "../../../services/ApiService/UserApiService/UserApiService";
+import {deleteOneById, editOneById, findOneById} from "../../../services/ApiService/UserApiService/UserApiService";
 import {submit} from "../../../services/FormSubmissionService";
 import {FormErrors} from "../../../types";
 
@@ -44,6 +44,13 @@ const Page = () => {
     };
   }, []);
   const [apiErrors, setApiErrors] = useState<FormErrors>({...defaultApiErrors});
+
+  const handleDelete = () => {
+    deleteOneById(userId)
+      .then(() => {
+        router.push('/users/list');
+      });
+  };
 
   const onSubmit: SubmitHandler<FormInput> = async (data: UserFormUser) => {
     await submit(
@@ -191,6 +198,9 @@ const Page = () => {
     <>
       <Link href="/users/list">List</Link>
       {renderConditional()}
+      {!query.isIdle && !query.isLoading && !query.isError && (
+        <Button color="error" onClick={handleDelete} variant="contained">Delete</Button>
+      )}
     </>
   );
 };

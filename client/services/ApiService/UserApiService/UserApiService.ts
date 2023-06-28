@@ -28,6 +28,27 @@ function add(user: UserFormUser) {
   });
 }
 
+function deleteOneById(id: string) {
+  return new Promise<void>((resolve, reject) => {
+    axios
+      .delete(rootUrl + '/' + id)
+      .then(response => {
+        if (response.status < 300) {
+          resolve();
+        } else {
+          reject();
+        }
+      })
+      .catch(error => {
+        if (error.response?.status === 404) {
+          resolve();
+        } else {
+          reject(error);
+        }
+      });
+  });
+}
+
 function editOneById(id: string, user: UserListUser) {
   return new Promise<AxiosResponseWithUserFormUser>((resolve, reject) => {
     axios
@@ -90,6 +111,7 @@ function paginatedFindAll(
 
 export {
   add,
+  deleteOneById,
   editOneById,
   findOneById,
   paginatedFindAll
