@@ -29,13 +29,15 @@ const Page = () => {
         // Clears all form errors.
         setApiError(undefined);
 
-        // Clears all fiels.
+        // Clears all fields.
         reset();
       },
       undefined,
       undefined,
       error => {
         setApiError(error);
+
+        // Clears password field.
         resetField('password');
       }
     );
