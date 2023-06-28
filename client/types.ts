@@ -4,6 +4,11 @@ export type ApiPlatformConstraintViolation = {
   propertyPath: string;
 };
 
+export type Credentials = {
+  username: string;
+  password: string;
+};
+
 export type FormErrors = {
   [key: string]: string[]
 };
