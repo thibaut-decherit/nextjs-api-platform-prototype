@@ -1,19 +1,25 @@
 import PropTypes from "prop-types";
-import {ReactNode} from "react";
+import {ReactNode, useState} from "react";
+import {DehydratedState, Hydrate, QueryClient, QueryClientProvider} from "react-query";
 import "../src/app/globals.css";
 
 const Layout = (
   {
-    children
+    children,
+    dehydratedState
   }: {
     children: ReactNode;
+    dehydratedState: DehydratedState;
   }
 ) => {
+  const [queryClient] = useState(() => new QueryClient());
 
   return (
-    <>
-      {children}
-    </>
+    <QueryClientProvider client={queryClient}>
+      <Hydrate state={dehydratedState}>
+        {children}
+      </Hydrate>
+    </QueryClientProvider>
   );
 };
 
