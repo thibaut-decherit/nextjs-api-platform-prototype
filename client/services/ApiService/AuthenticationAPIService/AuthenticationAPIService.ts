@@ -1,10 +1,11 @@
 import axios from "axios";
 import _ from "lodash";
 import {Credentials} from "../../../types";
+import {getApiUrl} from "../ApiUrlService";
 import {GetJWTResponse} from "./AuthenticationAPIService.interfaces";
-import {GetJWTOnSuccessCallback} from "./AuthenticationAPIService.types";
+import type {GetJWTOnSuccessCallback} from "./AuthenticationAPIService.types";
 
-const rootUrl = (process.env.NEXT_PUBLIC_API_BASE_URL as string) + (process.env.NEXT_PUBLIC_API_PATH as string);
+const rootUrl = getApiUrl();
 
 function getJWT(
   credentials: Credentials,
