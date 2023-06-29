@@ -15,6 +15,7 @@ class JWTAuthenticationSuccessListener
     private string $cookiePrefix;
     private string $cookieSameSite;
     private bool $cookieSecure;
+    private string $cookieDomain;
     private JWTEncoderInterface $JWTEncoder;
 
     public function __construct(
@@ -22,6 +23,7 @@ class JWTAuthenticationSuccessListener
         string $cookiePrefix,
         string $cookieSameSite,
         string $cookieSecure,
+        string $cookieDomain,
         JWTEncoderInterface $JWTEncoder,
         RequestStack $requestStack
     )
@@ -32,6 +34,7 @@ class JWTAuthenticationSuccessListener
         $this->cookieSecure = $cookieSecure === 'auto'
             ? !empty($requestStack->getMainRequest()->server->get('HTTPS'))
             : $cookieSecure;
+        $this->cookieDomain = $cookieDomain;
         $this->JWTEncoder = $JWTEncoder;
     }
 
@@ -53,7 +56,8 @@ class JWTAuthenticationSuccessListener
                 $event->getData()['token'], // cookie value
                 $token['exp'], // expiration
                 '/', // Path
-                null, // domain, null means that Symfony will generate it on its own.
+                // Domain, null means that Symfony will generate it on its own.
+                $this->cookieDomain !== 'auto' ? $this->cookieDomain : null,
                 $this->cookieSecure, // secure
                 true, // httpOnly
                 false, // raw
