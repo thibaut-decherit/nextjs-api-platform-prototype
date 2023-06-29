@@ -41,7 +41,7 @@ const Page = () => {
         // Clears all form errors.
         setApiErrors({...defaultApiErrors});
 
-        // Clears all fiels.
+        // Clears all fields.
         reset();
       },
       apiErrors,
