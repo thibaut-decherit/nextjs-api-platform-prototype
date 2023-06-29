@@ -2,17 +2,11 @@ import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import React, {useState} from "react";
 import {Controller, SubmitHandler, useForm} from "react-hook-form";
-import {UserFormUser} from "../../components/pages/users/types";
-import {getJWT} from "../../services/ApiService/AuthenticationAPIService/AuthenticationAPIService";
-import {submit} from "../../services/FormSubmissionService";
-
-type FormInput = {
-  email: string,
-  password: string
-};
+import {login} from "../../services/AuthenticationService";
+import type {Credentials} from "../../types";
 
 const Page = () => {
-  const {control, formState: {errors}, handleSubmit, reset, resetField} = useForm<FormInput>({
+  const {control, formState: {errors}, handleSubmit, reset, resetField} = useForm<Credentials>({
     defaultValues: {
       email: '',
       password: ''
@@ -21,26 +15,21 @@ const Page = () => {
 
   const [apiError, setApiError] = useState(undefined);
 
-  const onSubmit: SubmitHandler<FormInput> = async (data: UserFormUser) => {
-    await submit(
-      getJWT,
-      [data],
-      () => {
+  const onSubmit: SubmitHandler<Credentials> = async (data: Credentials) => {
+    await login(data)
+      .then(() => {
         // Clears all form errors.
         setApiError(undefined);
 
         // Clears all fields.
         reset();
-      },
-      undefined,
-      undefined,
-      error => {
+      })
+      .catch(error => {
         setApiError(error);
 
         // Clears password field.
         resetField('password');
-      }
-    );
+      });
   };
 
   const renderApiError = () => {

@@ -5,7 +5,4 @@ export interface GetJWTResponse extends AxiosResponse {
     token: string;
     [key: string]: unknown;
   };
-  headers: {
-    [key: string]: string
-  };
 }

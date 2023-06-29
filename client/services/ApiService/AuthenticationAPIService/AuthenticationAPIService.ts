@@ -3,24 +3,18 @@ import _ from "lodash";
 import {Credentials} from "../../../types";
 import {getApiUrl} from "../ApiUrlService";
 import {GetJWTResponse} from "./AuthenticationAPIService.interfaces";
-import type {GetJWTOnSuccessCallback} from "./AuthenticationAPIService.types";
 
 const rootUrl = getApiUrl();
 
 function getJWT(
-  credentials: Credentials,
-  onSuccess?: GetJWTOnSuccessCallback
+  credentials: Credentials
 ) {
-  return new Promise<void>((resolve, reject) => {
+  return new Promise<GetJWTResponse>((resolve, reject) => {
     axios
       .post(rootUrl + '/login_check', credentials)
       .then((response: GetJWTResponse) => {
         if (_.has(response, 'data.token') && _.has(response, 'headers.app-user-front-end-data-json')) {
-          if (typeof onSuccess === 'function') {
-            onSuccess(response);
-          }
-
-          return resolve();
+          return resolve(response);
         }
 
         reject('error');
@@ -40,6 +34,5 @@ function getJWT(
 }
 
 export {
-  getJWT,
-  GetJWTOnSuccessCallback
+  getJWT
 };
