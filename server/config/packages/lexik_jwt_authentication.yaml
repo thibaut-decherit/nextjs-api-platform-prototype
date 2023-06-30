@@ -9,4 +9,4 @@ lexik_jwt_authentication:
       enabled: false
     cookie:
       enabled: true
-      name: '%env(JWT_COOKIE_NAME)%'
+      name: '%env(AUTH_COOKIES_PREFIX)%''%env(JWT_COOKIE_NAME)%'
