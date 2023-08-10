@@ -54,5 +54,8 @@
     "jest-environment-jsdom": "^29.5.0",
     "msw": "^1.2.2",
     "ts-jest": "^29.1.0"
+  },
+  "engines" : {
+    "node" : ">=18"
   }
 }
