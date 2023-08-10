@@ -83,10 +83,12 @@ function findOneById(id: string) {
   });
 }
 
+type PaginatedFindAllReturn = { results: UserListUser[], totalItemsCount: number };
+
 function paginatedFindAll(
   itemsPerPage = 5,
   pageNumber = 1
-) {
+): Promise<PaginatedFindAllReturn> {
   const url =
     rootUrl +
     `?itemsPerPage=${itemsPerPage}` +
@@ -117,3 +119,7 @@ export {
   findOneById,
   paginatedFindAll
 };
+
+export type {
+  PaginatedFindAllReturn
+}

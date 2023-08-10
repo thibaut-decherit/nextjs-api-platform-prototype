@@ -19,7 +19,7 @@ import useSetQueryStringParam from "../../components/hooks/useSetQueryStringPara
 import {UserListUser} from "../../components/pages/users/types";
 import Placeholder from "../../components/Placeholder";
 import NextRouterHelper from "../../helpers/NextRouterHelper";
-import {paginatedFindAll} from "../../services/ApiService/UserApiService/UserApiService";
+import {paginatedFindAll, PaginatedFindAllReturn} from "../../services/ApiService/UserApiService/UserApiService";
 
 const buildQuery = (itemsPerPage: number, pageNumber: number) => {
   return {
@@ -84,12 +84,12 @@ const Page = (
     setQueryStringParam('itemsPerPage', event.target.value, 'push');
   }
 
-  const query = useQuery<{ results: UserListUser[], totalItemsCount: number }, AxiosError>(
+  const query = useQuery<PaginatedFindAllReturn, AxiosError>(
     buildQuery(itemsPerPage, pageNumber)
   );
 
   const renderPlaceholders = () => {
-    const placeholders = [];
+    const placeholders: React.JSX.Element[] = [];
     for (let i = 0; i < itemsPerPage; i++) {
       placeholders.push(
         <TableRow key={i}>
@@ -171,7 +171,7 @@ const Page = (
         : (
           <TablePagination
             component="div"
-            count={query?.data?.totalItemsCount || 0}
+            count={query?.data?.totalItemsCount ?? 0}
             page={pageNumber - 1}
             onPageChange={handleChangePage}
             onRowsPerPageChange={handleChangeItemsPerPage}

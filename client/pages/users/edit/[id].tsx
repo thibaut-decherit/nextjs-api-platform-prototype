@@ -48,7 +48,7 @@ const Page = () => {
   const handleDelete = () => {
     deleteOneById(userId)
       .then(() => {
-        router.push('/users/list');
+        void router.push('/users/list');
       });
   };
 
