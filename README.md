@@ -31,6 +31,7 @@ Run in dedicated terminals:
 - `yarn --cwd client/ dev`
 
 You can now access the application at [http://localhost:3000/login](http://localhost:3000/login).\
+Once you are logged-in, navigate to [http://localhost:3000/users/list](http://localhost:3000/users/list).\
 The Next.JS server will act as a proxy for API requests to http://localhost:8000 to allow the auth cookie to be 'shared'
 between the two origins even though they don't share a domain. It should not be an issue in production as both servers
 should share a domain (e.g. the Next.JS app could be on https://example.com and the API on https://api.example.com and
