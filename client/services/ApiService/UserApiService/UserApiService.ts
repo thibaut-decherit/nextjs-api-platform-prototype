@@ -122,4 +122,4 @@ export {
 
 export type {
   PaginatedFindAllReturn
-}
+};
