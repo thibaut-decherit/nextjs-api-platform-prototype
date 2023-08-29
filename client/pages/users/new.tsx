@@ -7,6 +7,7 @@ import {UserFormUser} from "../../components/pages/users/types";
 import {add} from "../../services/ApiService/UserApiService/UserApiService";
 import {submit} from "../../services/FormSubmissionService";
 import {FormErrors} from "../../types";
+import {useQueryClient} from "react-query";
 
 type FormInput = {
   firstName: string,
@@ -15,6 +16,8 @@ type FormInput = {
 };
 
 const Page = () => {
+  const queryClient = useQueryClient();
+
   const {control, formState: {errors}, handleSubmit, reset} = useForm<FormInput>({
     defaultValues: {
       firstName: '',
@@ -43,6 +46,9 @@ const Page = () => {
 
         // Clears all fields.
         reset();
+
+        // Clears the react-query cache for the users list.
+        queryClient.invalidateQueries(['users']);
       },
       apiErrors,
       setApiErrors

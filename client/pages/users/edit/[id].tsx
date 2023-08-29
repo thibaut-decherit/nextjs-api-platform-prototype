@@ -5,7 +5,7 @@ import Link from "next/link";
 import {useRouter} from "next/router";
 import React, {useMemo, useState} from "react";
 import {Controller, SubmitHandler, useForm} from "react-hook-form";
-import {useQuery} from "react-query";
+import {useQuery, useQueryClient} from "react-query";
 import {UserFormUser} from "../../../components/pages/users/types";
 import {deleteOneById, editOneById, findOneById} from "../../../services/ApiService/UserApiService/UserApiService";
 import {submit} from "../../../services/FormSubmissionService";
@@ -20,6 +20,7 @@ type FormInput = {
 const Page = () => {
   const router = useRouter();
   const userId = String(router.query.id);
+  const queryClient = useQueryClient();
 
   const query = useQuery<UserFormUser, AxiosError>({
     queryKey: ['user', userId],
@@ -59,6 +60,10 @@ const Page = () => {
       () => {
         // Clears all form errors.
         setApiErrors({...defaultApiErrors});
+
+        // Clears the react-query cache for that user and the users list.
+        queryClient.invalidateQueries(['user', userId]);
+        queryClient.invalidateQueries(['users']);
       },
       apiErrors,
       setApiErrors
