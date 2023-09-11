@@ -31,18 +31,51 @@ const buildQuery = (itemsPerPage: number, pageNumber: number) => {
     staleTime: 60000
   };
 }
+const cleanupSearchParam = (name: string, value: string | string[]) => {
+  switch (name) {
+    case 'itemsPerPage':
+      if (!itemsPerPageOptions.includes(Number(value))) {
+        value = String(defaultStatesValues.itemsPerPage);
+      }
+
+      break;
+    case 'page': {
+      const parsedValue = Number(value);
+      if (!_.isFinite(parsedValue) || parsedValue <= 0) {
+        value = String(defaultStatesValues.pageNumber);
+      }
+      break;
+    }
+    default:
+      throw new Error(`Search parameter ${name} is not supported.`);
+  }
+
+  return value;
+}
 const defaultStatesValues = {
   pageNumber: 1,
   itemsPerPage: 25
 };
+const itemsPerPageOptions = [
+  25,
+  50,
+  100
+];
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const itemsPerPage =
-    Number(_.get(context, 'query.itemsPerPage', defaultStatesValues.itemsPerPage))
-    || defaultStatesValues.itemsPerPage;
-  const pageNumber =
-    Number(_.get(context, 'query.page', defaultStatesValues.pageNumber))
-    || defaultStatesValues.pageNumber;
+  const itemsPerPage = Number(
+    cleanupSearchParam(
+      'itemsPerPage',
+      _.get(context, 'query.itemsPerPage', '')
+    )
+  );
+
+  const pageNumber = Number(
+    cleanupSearchParam(
+      'page',
+      _.get(context, 'query.page', '')
+    )
+  );
 
   const queryClient = new QueryClient();
   await queryClient.prefetchQuery(buildQuery(itemsPerPage, pageNumber));
@@ -69,7 +102,12 @@ const Page = (
   const searchParams = useSearchParams();
 
   const [pageNumber, setPageNumber] = [
-    Number(searchParams?.get('page') ?? ssrPageNumber),
+    Number(
+      cleanupSearchParam(
+        'page',
+        String(searchParams?.get('page') ?? ssrPageNumber)
+      )
+    ),
     (pageNumber: number) => router.push({query: {...router.query, ['page']: String(pageNumber)}})
   ];
   const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPageNumber: number) => {
@@ -80,7 +118,12 @@ const Page = (
   }
 
   const [itemsPerPage, setItemsPerPage] = [
-    Number(searchParams?.get('itemsPerPage') ?? ssrItemsPerPage),
+    Number(
+      cleanupSearchParam(
+        'itemsPerPage',
+        String(searchParams?.get('itemsPerPage') ?? ssrItemsPerPage)
+      )
+    ),
     (itemsPerPage: number) => router.push({query: {...router.query, ['itemsPerPage']: String(itemsPerPage)}})
   ];
   const handleChangeItemsPerPage = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
@@ -158,7 +201,7 @@ const Page = (
             onPageChange={handleChangePage}
             onRowsPerPageChange={handleChangeItemsPerPage}
             rowsPerPage={itemsPerPage}
-            rowsPerPageOptions={[25, 50, 100]}
+            rowsPerPageOptions={itemsPerPageOptions}
           />
         )
       }
@@ -167,7 +210,7 @@ const Page = (
 };
 
 Page.propTypes = {
-  ssrItemsPerPage: PropTypes.number.isRequired,
+  ssrItemsPerPage: PropTypes.oneOf(itemsPerPageOptions).isRequired,
   ssrPageNumber: PropTypes.number.isRequired
 };
 
