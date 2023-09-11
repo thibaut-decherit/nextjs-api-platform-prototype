@@ -10,21 +10,24 @@ import {AxiosError} from "axios";
 import _ from "lodash";
 import {GetServerSideProps} from "next";
 import Link from "next/link";
+import {useSearchParams} from "next/navigation";
 import type {NextRouter} from "next/router";
 import {useRouter} from "next/router";
 import PropTypes from "prop-types";
-import React, {useEffect, useState} from "react";
+import React from "react";
 import {dehydrate, QueryClient, useQuery} from "react-query";
-import useSetQueryStringParam from "../../components/hooks/useSetQueryStringParam";
 import {UserListUser} from "../../components/pages/users/types";
 import Placeholder from "../../components/Placeholder";
-import NextRouterHelper from "../../helpers/NextRouterHelper";
 import {paginatedFindAll, PaginatedFindAllReturn} from "../../services/ApiService/UserApiService/UserApiService";
 
 const buildQuery = (itemsPerPage: number, pageNumber: number) => {
   return {
     queryKey: ['users', itemsPerPage, pageNumber],
     queryFn: () => paginatedFindAll(itemsPerPage, pageNumber),
+    /*
+    staleTime is specified to prevent react-query from re fetching the data way too much: e.g. every single time the
+    window loses then regains focus (sometimes even two times in a row during that event).
+     */
     staleTime: 60000
   };
 }
@@ -42,11 +45,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     || defaultStatesValues.pageNumber;
 
   const queryClient = new QueryClient();
-
-  /*
-  staleTime is specified to prevent react-query from re fetching the data way too much: e.g. every single time the
-  window loses then regains focus (sometimes even two times in a row during that event).
-   */
   await queryClient.prefetchQuery(buildQuery(itemsPerPage, pageNumber));
 
   return {
@@ -67,21 +65,26 @@ const Page = (
     ssrPageNumber: number;
   }
 ) => {
-  const setQueryStringParam = useSetQueryStringParam();
+  const router: NextRouter = useRouter();
+  const searchParams = useSearchParams();
 
-  const [pageNumber, setPageNumber] = useState(ssrPageNumber);
+  const [pageNumber, setPageNumber] = [
+    Number(searchParams?.get('page') ?? ssrPageNumber),
+    (pageNumber: number) => router.push({query: {...router.query, ['page']: String(pageNumber)}})
+  ];
   const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPageNumber: number) => {
-    // TablePagination starts at 0, not at 1.
+    // newPageNumber comes from TablePagination and therefore starts at 0, not at 1.
     newPageNumber = newPageNumber + 1;
 
-    setPageNumber(newPageNumber);
-    setQueryStringParam('page', String(newPageNumber), 'push');
+    void setPageNumber(newPageNumber);
   }
 
-  const [itemsPerPage, setItemsPerPage] = useState(ssrItemsPerPage);
+  const [itemsPerPage, setItemsPerPage] = [
+    Number(searchParams?.get('itemsPerPage') ?? ssrItemsPerPage),
+    (itemsPerPage: number) => router.push({query: {...router.query, ['itemsPerPage']: String(itemsPerPage)}})
+  ];
   const handleChangeItemsPerPage = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-    setItemsPerPage(Number(event.target.value));
-    setQueryStringParam('itemsPerPage', event.target.value, 'push');
+    void setItemsPerPage(Number(event.target.value));
   }
 
   const query = useQuery<PaginatedFindAllReturn, AxiosError>(
@@ -104,27 +107,6 @@ const Page = (
 
     return placeholders;
   }
-
-  const router: NextRouter = useRouter();
-  useEffect(() => {
-    /*
-    Ensures search related states remain synced with URL query params in case the latter change because of
-    navigation (e.g. back/forward or click on the current page's link in the navbar).
-     */
-    NextRouterHelper.syncStatesWithQueryParams(
-      {
-        itemsPerPage: {
-          defaultValue: defaultStatesValues.itemsPerPage,
-          setStateFunction: itemsPerPage => setItemsPerPage(Number(itemsPerPage))
-        },
-        page: {
-          defaultValue: defaultStatesValues.pageNumber,
-          setStateFunction: pageNumber => setPageNumber(Number(pageNumber))
-        }
-      },
-      router.query
-    );
-  }, [router.query]);
 
   return (
     <>
