@@ -3,7 +3,7 @@ import TextField from "@mui/material/TextField";
 import Link from "next/link";
 import React, {useMemo, useState} from "react";
 import {Controller, SubmitHandler, useForm} from "react-hook-form";
-import {UserFormUser} from "../../components/pages/users/types";
+import {UserFormApiErrors, UserFormUser} from "../../components/pages/users/types";
 import {add} from "../../services/ApiService/UserApiService/UserApiService";
 import {submit} from "../../services/FormSubmissionService";
 import {FormErrors} from "../../types";
@@ -27,7 +27,7 @@ const Page = () => {
     }
   });
 
-  const defaultApiErrors = useMemo(() => {
+  const defaultApiErrors: UserFormApiErrors = useMemo(() => {
     return {
       company: [],
       email: [],

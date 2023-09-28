@@ -6,7 +6,7 @@ import {useRouter} from "next/router";
 import React, {useMemo, useState} from "react";
 import {Controller, SubmitHandler, useForm} from "react-hook-form";
 import {useQuery, useQueryClient} from "react-query";
-import {UserFormUser} from "../../../components/pages/users/types";
+import {UserFormApiErrors, UserFormUser} from "../../../components/pages/users/types";
 import {deleteOneById, editOneById, findOneById} from "../../../services/ApiService/UserApiService/UserApiService";
 import {submit} from "../../../services/FormSubmissionService";
 import {FormErrors} from "../../../types";
@@ -37,7 +37,7 @@ const Page = () => {
 
   const {control, formState: {errors}, handleSubmit} = useForm<UserFormUser>({values: query?.data});
 
-  const defaultApiErrors = useMemo(() => {
+  const defaultApiErrors: UserFormApiErrors = useMemo(() => {
     return {
       company: [],
       email: [],

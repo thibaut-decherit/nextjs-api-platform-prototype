@@ -1,3 +1,10 @@
+export type UserFormApiErrors = {
+  company: string[],
+  email: string[],
+  firstName: string[],
+  lastName: string[]
+}
+
 export type UserFormUser = {
   email: string;
   firstName: string;
