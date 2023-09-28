@@ -8,6 +8,7 @@ import {add} from "../../services/ApiService/UserApiService/UserApiService";
 import {submit} from "../../services/FormSubmissionService";
 import {FormErrors} from "../../types";
 import {useQueryClient} from "react-query";
+import _ from "lodash";
 
 type FormInput = {
   firstName: string,
@@ -34,7 +35,7 @@ const Page = () => {
       lastName: []
     };
   }, []);
-  const [apiErrors, setApiErrors] = useState<FormErrors>({...defaultApiErrors});
+  const [apiErrors, setApiErrors] = useState<FormErrors>(_.cloneDeep(defaultApiErrors));
 
   const onSubmit: SubmitHandler<FormInput> = async (data: UserFormUser) => {
     await submit(
@@ -42,7 +43,7 @@ const Page = () => {
       [data],
       () => {
         // Clears all form errors.
-        setApiErrors({...defaultApiErrors});
+        setApiErrors(_.cloneDeep(defaultApiErrors));
 
         // Clears all fields.
         reset();

@@ -10,6 +10,7 @@ import {UserFormUser} from "../../../components/pages/users/types";
 import {deleteOneById, editOneById, findOneById} from "../../../services/ApiService/UserApiService/UserApiService";
 import {submit} from "../../../services/FormSubmissionService";
 import {FormErrors} from "../../../types";
+import _ from "lodash";
 
 type FormInput = {
   firstName: string,
@@ -44,7 +45,7 @@ const Page = () => {
       lastName: []
     };
   }, []);
-  const [apiErrors, setApiErrors] = useState<FormErrors>({...defaultApiErrors});
+  const [apiErrors, setApiErrors] = useState<FormErrors>(_.cloneDeep(defaultApiErrors));
 
   const handleDelete = () => {
     deleteOneById(userId)
@@ -59,7 +60,7 @@ const Page = () => {
       [userId, data],
       () => {
         // Clears all form errors.
-        setApiErrors({...defaultApiErrors});
+        setApiErrors(_.cloneDeep(defaultApiErrors));
 
         // Clears the react-query cache for that user and the users list.
         queryClient.invalidateQueries(['user', userId]);
