@@ -1,9 +1,9 @@
+import {login} from "@/services/AuthenticationService";
+import type {Credentials} from "@/types";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import React, {useState} from "react";
 import {Controller, SubmitHandler, useForm} from "react-hook-form";
-import {login} from "@/services/AuthenticationService";
-import type {Credentials} from "@/types";
 
 const Page = () => {
   const {control, formState: {errors}, handleSubmit, reset, resetField} = useForm<Credentials>({

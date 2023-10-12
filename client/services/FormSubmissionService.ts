@@ -1,7 +1,7 @@
+import {ApiPlatformConstraintViolation} from "@/types";
 import {AxiosPromise, AxiosResponse} from "axios";
 import _ from "lodash";
 import {Dispatch, SetStateAction} from "react";
-import {ApiPlatformConstraintViolation} from "@/types";
 
 /**
  * @param {function} axiosCallback

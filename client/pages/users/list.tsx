@@ -1,3 +1,6 @@
+import {UserListUser} from "@/components/pages/users/types";
+import Placeholder from "@/components/Placeholder";
+import {paginatedFindAll, PaginatedFindAllReturn} from "@/services/ApiService/UserApiService/UserApiService";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -16,9 +19,6 @@ import {useRouter} from "next/router";
 import PropTypes from "prop-types";
 import React from "react";
 import {dehydrate, QueryClient, useQuery} from "react-query";
-import {UserListUser} from "@/components/pages/users/types";
-import Placeholder from "@/components/Placeholder";
-import {paginatedFindAll, PaginatedFindAllReturn} from "@/services/ApiService/UserApiService/UserApiService";
 
 const buildQuery = (itemsPerPage: number, pageNumber: number) => {
   return {
