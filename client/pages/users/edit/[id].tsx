@@ -6,10 +6,10 @@ import {useRouter} from "next/router";
 import React, {useMemo, useState} from "react";
 import {Controller, SubmitHandler, useForm} from "react-hook-form";
 import {useQuery, useQueryClient} from "react-query";
-import {UserFormApiErrors, UserFormUser} from "../../../components/pages/users/types";
-import {deleteOneById, editOneById, findOneById} from "../../../services/ApiService/UserApiService/UserApiService";
-import {submit} from "../../../services/FormSubmissionService";
-import {FormErrors} from "../../../types";
+import {UserFormApiErrors, UserFormUser} from "@/components/pages/users/types";
+import {deleteOneById, editOneById, findOneById} from "@/services/ApiService/UserApiService/UserApiService";
+import {submit} from "@/services/FormSubmissionService";
+import {FormErrors} from "@/types";
 import _ from "lodash";
 
 type FormInput = {

@@ -1,4 +1,4 @@
-import {Credentials} from "../types";
+import {Credentials} from "@/types";
 import {getJWT} from "./ApiService/AuthenticationAPIService/AuthenticationAPIService";
 
 const login = (

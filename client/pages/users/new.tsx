@@ -3,10 +3,10 @@ import TextField from "@mui/material/TextField";
 import Link from "next/link";
 import React, {useMemo, useState} from "react";
 import {Controller, SubmitHandler, useForm} from "react-hook-form";
-import {UserFormApiErrors, UserFormUser} from "../../components/pages/users/types";
-import {add} from "../../services/ApiService/UserApiService/UserApiService";
-import {submit} from "../../services/FormSubmissionService";
-import {FormErrors} from "../../types";
+import {UserFormApiErrors, UserFormUser} from "@/components/pages/users/types";
+import {add} from "@/services/ApiService/UserApiService/UserApiService";
+import {submit} from "@/services/FormSubmissionService";
+import {FormErrors} from "@/types";
 import {useQueryClient} from "react-query";
 import _ from "lodash";
 
