@@ -1,7 +1,7 @@
+import {getApiUrl} from "@/services/ApiService/ApiUrlService";
+import {Credentials} from "@/types";
 import axios from "axios";
 import _ from "lodash";
-import {Credentials} from "../../../types";
-import {getApiUrl} from "../ApiUrlService";
 import {GetJWTResponse} from "./AuthenticationAPIService.interfaces";
 
 const rootUrl = getApiUrl();

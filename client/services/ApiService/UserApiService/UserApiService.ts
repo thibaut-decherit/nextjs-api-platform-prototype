@@ -1,6 +1,6 @@
+import {UserFormUser, UserListUser} from "@/components/pages/users/types";
+import {getApiUrl} from "@/services/ApiService/ApiUrlService";
 import axios from "axios";
-import {UserFormUser, UserListUser} from "../../../components/pages/users/types";
-import {getApiUrl} from "../ApiUrlService";
 import {AxiosResponseWithUserFormUser} from "./UserApiService.interfaces";
 
 const rootUrl = getApiUrl() + '/users';

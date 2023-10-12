@@ -1,5 +1,8 @@
 /** @type {import('ts-jest').JestConfigWithTsJest} */
 module.exports = {
+  moduleNameMapper: {
+    '^@/(.*)$': '<rootDir>/$1'
+  },
   preset: 'ts-jest',
   setupFilesAfterEnv: [
     '@testing-library/jest-dom/extend-expect',

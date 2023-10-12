@@ -1,7 +1,7 @@
+import "@/src/app/globals.css";
 import PropTypes from "prop-types";
 import {ReactNode, useState} from "react";
 import {DehydratedState, Hydrate, QueryClient, QueryClientProvider} from "react-query";
-import "../src/app/globals.css";
 
 const Layout = (
   {
