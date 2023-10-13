@@ -1,5 +1,5 @@
-import "@/components/axios";
 import Layout from "@/components/Layout";
+import "@/lib/axios";
 import type {AppProps} from "next/app";
 import {DehydratedState} from "react-query";
 
