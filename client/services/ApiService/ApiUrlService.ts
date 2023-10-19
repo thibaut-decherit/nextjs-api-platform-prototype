@@ -1,9 +1,11 @@
+import {NEXT_PUBLIC_API_BASE_URL, NEXT_PUBLIC_API_PATH, NEXT_PUBLIC_API_PROXY_BASE_URL} from "@/config";
+
 export function getApiUrl() {
   let baseUrl;
-  if (process?.env?.NEXT_PUBLIC_API_PROXY_BASE_URL) {
-    baseUrl = process.env.NEXT_PUBLIC_API_PROXY_BASE_URL;
+  if (NEXT_PUBLIC_API_PROXY_BASE_URL) {
+    baseUrl = NEXT_PUBLIC_API_PROXY_BASE_URL;
   } else {
-    baseUrl = process?.env?.NEXT_PUBLIC_API_BASE_URL;
+    baseUrl = NEXT_PUBLIC_API_BASE_URL;
   }
 
   if (baseUrl === undefined) {
@@ -13,5 +15,5 @@ export function getApiUrl() {
     );
   }
 
-  return baseUrl + process.env.NEXT_PUBLIC_API_PATH ;
+  return baseUrl + NEXT_PUBLIC_API_PATH;
 }
