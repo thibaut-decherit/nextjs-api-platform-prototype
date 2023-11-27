@@ -10,7 +10,7 @@ import React, {useMemo, useState} from "react";
 import {Controller, SubmitHandler, useForm} from "react-hook-form";
 import {useQueryClient} from "react-query";
 
-type FormInput = {
+type Inputs = {
   firstName: string,
   lastName: string,
   email: string
@@ -19,7 +19,7 @@ type FormInput = {
 const Page = () => {
   const queryClient = useQueryClient();
 
-  const {control, formState: {errors}, handleSubmit, reset} = useForm<FormInput>({
+  const {control, formState: {errors}, handleSubmit, reset} = useForm<Inputs>({
     defaultValues: {
       firstName: '',
       lastName: '',
@@ -37,7 +37,7 @@ const Page = () => {
   }, []);
   const [apiErrors, setApiErrors] = useState<FormErrors>(_.cloneDeep(defaultApiErrors));
 
-  const onSubmit: SubmitHandler<FormInput> = async (data: UserFormUser) => {
+  const onSubmit: SubmitHandler<Inputs> = async (data: UserFormUser) => {
     await submit(
       add,
       [data],
